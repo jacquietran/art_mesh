@@ -79,7 +79,7 @@ p <- ggplot2::ggplot() +
 
 ggplot2::ggsave(
   here::here(glue::glue("img/{`iteration_id`}.png")),
-  ggplot2::last_plot(), width = 4000, height = 4000, units = "px", dpi = 100,
+  ggplot2::last_plot(), width = 4000, height = 4000, units = "px", dpi = 600,
   device = ragg::agg_png)
 
 beepr::beep(2)
