@@ -8,7 +8,7 @@ source(here::here("R/fx_draw_gridlines.R"))
 
 # General params
 iteration_id <- "mesh_00XX"
-initial_seed <- 861930
+initial_seed <- 123456789
 bg_colour <- "#ffefd3"
 panel_colour <- "#131313"
 
@@ -21,7 +21,7 @@ freq <- 1000
 noise_type <- "simplex"
 
 # For gridlines
-n_gridlines <- 175
+n_gridlines <- 100
 lower_limit <- -5
 upper_limit <- 15
 
@@ -57,7 +57,7 @@ p <- ggplot2::ggplot() +
   ggplot2::geom_segment(
     data = gridlines,
     ggplot2::aes(x = x, y = y, xend = xend, yend = yend),
-    colour = bg_colour, size = 0.02) +
+    colour = bg_colour, size = 0.02, alpha = 0.2) +
   # Mesh layer
   ggforce::geom_diagonal(
     data = diags,
@@ -79,7 +79,7 @@ p <- ggplot2::ggplot() +
 
 ggplot2::ggsave(
   here::here(glue::glue("img/{`iteration_id`}.png")),
-  ggplot2::last_plot(), width = 4000, height = 4000, units = "px", dpi = 100,
+  ggplot2::last_plot(), width = 4000, height = 4000, units = "px", dpi = 600,
   device = ragg::agg_png)
 
 beepr::beep(2)
