@@ -1,6 +1,6 @@
 # Source custom functions ------------------------------------------------------
 
-source(here::here("R/fx_apply_mesh.R"))
+source(here::here("R/fx_apply_mesh2.R"))
 source(here::here("R/fx_make_noise.R"))
 source(here::here("R/fx_draw_gridlines.R"))
 
@@ -28,7 +28,7 @@ upper_limit <- 15
 # Create data ------------------------------------------------------------------
 
 # Apply mesh
-mesh <- apply_mesh(
+mesh <- apply_mesh2(
   seed_num = initial_seed, num_diag_lines = num_diag_lines)
 end_points <- mesh$end_points
 diags <- mesh$diags
@@ -59,11 +59,11 @@ p <- ggplot2::ggplot() +
     ggplot2::aes(x = x, y = y, xend = xend, yend = yend),
     colour = bg_colour, size = 0.02) +
   # Mesh layer
-  ggforce::geom_diagonal0(
+  ggforce::geom_diagonal(
     data = diags,
     ggplot2::aes(x, y, xend = xend, yend = yend),
     strength = end_points$strength, size = end_points$size,
-    colour = bg_colour) +
+    colour = bg_colour, n = 500) +
   ggplot2::scale_colour_identity() +
   ggplot2::coord_equal(xlim = c(-5,15), ylim = c(-5,15), expand = FALSE) +
   ggplot2::theme_void() +
