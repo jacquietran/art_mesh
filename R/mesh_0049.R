@@ -13,7 +13,7 @@ bg_colour <- "#ffefd3"
 panel_colour <- "#131313"
 
 # For mesh
-num_diag_lines <- 75
+num_diag_lines <- 100
 
 # For noise
 starter_colours <- c("#000000", "#FFFFFF")
