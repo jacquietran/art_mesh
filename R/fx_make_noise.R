@@ -1,17 +1,33 @@
 make_noise <- function(
-  seed_num, colours, frequency,
+  seed_num, colours, frequency, x_min, x_max, y_min, y_max,
   noise_type = c(
     "value", "perlin", "cubic", "simplex", "waves", "white", "worley",
     "checkerboard", "spheres")){
   
   # Requires {grDevices}, {ambient}, and {dplyr}
   
+  if(missing(x_min)){
+    x_min <- -5
+  }
+  
+  if(missing(x_max)){
+    x_max <- 15
+  }
+  
+  if(missing(y_min)){
+    y_min <- -5
+  }
+  
+  if(missing(y_max)){
+    y_max <- 15
+  }
+  
   noise_gradient <- (grDevices::colorRampPalette(colours))(50)
   
   set.seed(seed_num)
   noise <- ambient::long_grid(
-    x = seq(-5, 15, length.out = 2000),
-    y = seq(-5, 15, length.out = 2000)) |>
+    x = seq(x_min, x_max, length.out = 2000),
+    y = seq(y_min, y_max, length.out = 2000)) |>
     dplyr::mutate(
       noise_type = noise_type,
       noise = dplyr::case_when(
