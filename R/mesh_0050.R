@@ -22,8 +22,8 @@ noise_type <- "value"
 
 # For gridlines
 n_gridlines <- 150
-lower_limit <- -5
-upper_limit <- 15
+lower_limit <- -9
+upper_limit <- 12
 
 # Create data ------------------------------------------------------------------
 
@@ -36,7 +36,7 @@ diags <- mesh$diags
 # Create noise data
 noise <- make_noise(
   seed_num = initial_seed, colours = starter_colours, frequency = freq,
-  noise_type = noise_type)
+  noise_type = noise_type, x_min = lower_limit, y_min = lower_limit)
 noise_data <- noise$noise
 noise_gradient <- noise$noise_gradient
 
@@ -65,7 +65,7 @@ p <- ggplot2::ggplot() +
     strength = end_points$strength, size = end_points$size,
     colour = bg_colour, n = 500) +
   ggplot2::scale_colour_identity() +
-  ggplot2::coord_equal(xlim = c(-5,10), ylim = c(-5,10), expand = FALSE) +
+  ggplot2::coord_equal(xlim = c(-8,11), ylim = c(-8.5,10.5), expand = FALSE) +
   ggplot2::theme_void() +
   ggplot2::theme(
     legend.position = "none",
