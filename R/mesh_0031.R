@@ -46,6 +46,7 @@ gridlines <- draw_gridlines(
 
 # Build plot -------------------------------------------------------------------
 
+# 4000x4000
 p <- ggplot2::ggplot() +
   # Noise layer
   ggplot2::geom_raster(
@@ -57,13 +58,13 @@ p <- ggplot2::ggplot() +
   ggplot2::geom_segment(
     data = gridlines,
     ggplot2::aes(x = x, y = y, xend = xend, yend = yend),
-    colour = bg_colour, size = 0.02) +
+    colour = bg_colour, size = 0.02, alpha = 0.2) +
   # Mesh layer
-  ggforce::geom_diagonal0(
+  ggforce::geom_diagonal(
     data = diags,
     ggplot2::aes(x, y, xend = xend, yend = yend),
     strength = end_points$strength, size = end_points$size,
-    colour = bg_colour) +
+    colour = bg_colour, n = 500) +
   ggplot2::scale_colour_identity() +
   ggplot2::coord_equal(xlim = c(-5,13), ylim = c(-5,13), expand = FALSE) +
   ggplot2::theme_void() +
@@ -75,11 +76,84 @@ p <- ggplot2::ggplot() +
       fill = bg_colour, colour = bg_colour),
     plot.margin = ggplot2::margin(40,40,40,40, unit = "pt"))
 
+# 10000x10000
+p_large <- ggplot2::ggplot() +
+  # Noise layer
+  ggplot2::geom_raster(
+    data = noise_data,
+    ggplot2::aes(x, y, fill = noise),
+    alpha = 0.15) +
+  ggplot2::scale_fill_gradientn(colours = noise_gradient) +
+  # Gridlines layer
+  ggplot2::geom_segment(
+    data = gridlines,
+    ggplot2::aes(x = x, y = y, xend = xend, yend = yend),
+    colour = bg_colour, size = 0.05, alpha = 0.2) +
+  # Mesh layer
+  ggforce::geom_diagonal(
+    data = diags,
+    ggplot2::aes(x, y, xend = xend, yend = yend),
+    strength = end_points$strength, size = (end_points$size*2.5),
+    colour = bg_colour, n = 1250) +
+  ggplot2::scale_colour_identity() +
+  ggplot2::coord_equal(xlim = c(-5,13), ylim = c(-5,13), expand = FALSE) +
+  ggplot2::theme_void() +
+  ggplot2::theme(
+    legend.position = "none",
+    panel.background = ggplot2::element_rect(
+      fill = panel_colour, colour = panel_colour),
+    plot.background = ggplot2::element_rect(
+      fill = bg_colour, colour = bg_colour),
+    plot.margin = ggplot2::margin(100,100,100,100, unit = "pt"))
+
+# Mesh layer only
+p_mesh_only <- ggplot2::ggplot() +
+  # Noise layer
+  #ggplot2::geom_raster(
+  #  data = noise_data,
+  #  ggplot2::aes(x, y, fill = noise),
+  #  alpha = 0.15) +
+  #ggplot2::scale_fill_gradientn(colours = noise_gradient) +
+  # Gridlines layer
+  #ggplot2::geom_segment(
+  #  data = gridlines,
+  #  ggplot2::aes(x = x, y = y, xend = xend, yend = yend),
+  #  colour = bg_colour, size = 0.05, alpha = 0.2) +
+# Mesh layer
+ggforce::geom_diagonal(
+  data = diags,
+  ggplot2::aes(x, y, xend = xend, yend = yend),
+  strength = end_points$strength, size = (end_points$size*2.5),
+  colour = bg_colour, n = 1250) +
+  # ggplot2::scale_colour_identity() +
+  ggplot2::coord_equal(xlim = c(-5,13), ylim = c(-5,13), expand = FALSE) +
+  ggplot2::theme_void() +
+  ggplot2::theme(
+    legend.position = "none",
+    #panel.background = ggplot2::element_rect(
+    #  fill = panel_colour, colour = panel_colour),
+    #plot.background = ggplot2::element_rect(
+    #  fill = bg_colour, colour = bg_colour),
+    plot.margin = ggplot2::margin(100,100,100,100, unit = "pt"))
+
 # Export to file ---------------------------------------------------------------
 
+# 4000x4000px
 ggplot2::ggsave(
   here::here(glue::glue("img/{`iteration_id`}.png")),
-  ggplot2::last_plot(), width = 4000, height = 4000, units = "px", dpi = 600,
+  p, width = 4000, height = 4000, units = "px", dpi = 600,
+  device = ragg::agg_png)
+
+# 10000x10000px
+ggplot2::ggsave(
+  here::here(glue::glue("img/{`iteration_id`}_large.png")),
+  p_large, width = 10000, height = 10000, units = "px", dpi = 600,
+  device = ragg::agg_png)
+
+# Mesh only, 10000x10000px
+ggplot2::ggsave(
+  here::here(glue::glue("img/{`iteration_id`}_mesh_only.png")),
+  p_mesh_only, width = 10000, height = 10000, units = "px", dpi = 600,
   device = ragg::agg_png)
 
 beepr::beep(2)
