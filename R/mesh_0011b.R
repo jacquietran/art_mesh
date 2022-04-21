@@ -2,6 +2,7 @@
 
 source(here::here("R/fx_apply_mesh.R"))
 source(here::here("R/fx_make_noise.R"))
+source(here::here("R/fx_draw_gridlines.R"))
 
 # Set parameters ---------------------------------------------------------------
 
@@ -12,12 +13,17 @@ bg_colour <- "#ffefd3"
 panel_colour <- "#131313"
 
 # For mesh
-num_diag_lines <- 80
+num_diag_lines <- 50
 
 # For noise
 starter_colours <- c("#000000", "#FFFFFF")
 freq <- 2000
 noise_type <- "simplex"
+
+# For gridlines
+n_gridlines <- 200
+lower_limit <- -11
+upper_limit <- 20
 
 # Create data ------------------------------------------------------------------
 
@@ -30,9 +36,14 @@ diags <- mesh$diags
 # Create noise data
 noise <- make_noise(
   seed_num = initial_seed, colours = starter_colours, frequency = freq,
-  noise_type = noise_type)
+  noise_type = noise_type, x_min = lower_limit, x_max = upper_limit,
+  y_min = lower_limit, y_max = upper_limit)
 noise_data <- noise$noise
 noise_gradient <- noise$noise_gradient
+
+# Create gridlines
+gridlines <- draw_gridlines(
+  lower = lower_limit, upper = upper_limit, n_gridlines = n_gridlines)
 
 # Build plot -------------------------------------------------------------------
 
@@ -43,13 +54,19 @@ p <- ggplot2::ggplot() +
     ggplot2::aes(x, y, fill = noise),
     alpha = 0.15) +
   ggplot2::scale_fill_gradientn(colours = noise_gradient) +
-  ggforce::geom_diagonal0(
+  # Gridlines layer
+  ggplot2::geom_segment(
+    data = gridlines,
+    ggplot2::aes(x = x, y = y, xend = xend, yend = yend),
+    colour = bg_colour, size = 0.02, alpha = 0.2) +
+  # Mesh layer
+  ggforce::geom_diagonal(
     data = diags,
     ggplot2::aes(x, y, xend = xend, yend = yend),
     strength = end_points$strength, size = end_points$size,
-    colour = bg_colour) +
+    colour = bg_colour, n = 500) +
   ggplot2::scale_colour_identity() +
-  ggplot2::coord_equal(xlim = c(-2,7), ylim = c(-2,7), expand = FALSE) +
+  ggplot2::coord_equal(xlim = c(-9.8,10.2), ylim = c(-3.5,16.5), expand = FALSE) +
   ggplot2::theme_void() +
   ggplot2::theme(
     legend.position = "none",
